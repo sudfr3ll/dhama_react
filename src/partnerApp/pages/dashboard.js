@@ -1,90 +1,162 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getDoc, doc } from 'firebase/firestore';
+import { getDocs, collection, query, where } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
+import { firebaseConfig } from './firebase';
+import { Link } from 'react-router-dom';
 
-// Import your Firebase config
-import { firebaseConfig } from './firebase'; // Make sure to create this file
-
-const Dashboard = ({ user }) => {
-  const [partnerType, setPartnerType] = useState(null);
+const Dashboard = () => {
+  const [user, setUser] = useState(null);
+  const [partnerData, setPartnerData] = useState({});
+  const [profiles, setProfiles] = useState([]);
   const [bookings, setBookings] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRegistered, setIsRegistered] = useState(false);
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const toggleExpansion = () => setIsExpanded(!isExpanded);
+
+
+  const [expandedProfiles, setExpandedProfiles] = useState(
+    profiles.map(() => false) // Create an array with false for each profile (collapsed initially)
+  );
+
+  const toggleExpansion1 = (index) => {
+    setExpandedProfiles((prevExpandedProfiles) => {
+      const updatedExpandedProfiles = [...prevExpandedProfiles]; // Copy the previous state
+      updatedExpandedProfiles[index] = !prevExpandedProfiles[index]; // Toggle expansion for clicked profile
+      return updatedExpandedProfiles;
+    });
+  };
+
 
   useEffect(() => {
-    const fetchPartnerDetails = async () => {
-      if (!user) return;
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
 
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      const userRef = doc(db, 'users', user.uid);
-      const userDoc = await getDoc(userRef);
+    return () => unsubscribe();
+  }, []);
 
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        if (userData.isPartner) {
-          setPartnerType(userData.partnerType);
-          setIsRegistered(true);
-          fetchBookings(userData.partnerType);
-        } else {
-          setIsRegistered(false);
+  useEffect(() => {
+    const fetchPartnerData = async () => {
+      try {
+        const partnerRef = doc(db, "partners", user.uid);
+        const partnerDoc = await getDoc(partnerRef);
+        if (partnerDoc.exists()) {
+          setPartnerData(partnerDoc.data());
+          console.log(partnerDoc.data());
         }
+      } catch (error) {
+        console.error('Error fetching partner data:', error);
       }
     };
 
-    fetchPartnerDetails();
-  }, [user]);
+    const fetchProfiles = async () => {
+      try {
+        const q = query(collection(db, 'partners', user.uid, 'partnerProfiles'));
+        const profilesSnapshot = await getDocs(q);
+        const profilesData = profilesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setProfiles(profilesData);
+        console.log(profilesData);
+      } catch (error) {
+        console.error('Error fetching profiles:', error);
+      }
+    };
 
-  const fetchBookings = async (partnerType) => {
-    setIsLoading(true);
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const bookingsSnapshot = await db.collection(`${partnerType}Bookings`).where('userId', '==', user.uid).get();
-    const bookingData = bookingsSnapshot.docs.map(doc => doc.data());
-    setBookings(bookingData);
-    setIsLoading(false);
-  };
-
-  const renderBookings = () => {
-    return (
-      <>
-        <h2>{`${partnerType} Bookings`}</h2>
-        <ul>
-          {bookings.map((booking, index) => (
-            <li key={index}>{/* Render booking details */}</li>
-          ))}
-        </ul>
-      </>
-    );
-  };
-
-  const renderPartnerRegistration = () => {
-    return (
-      <div>
-        <p>Please register to access your bookings.</p>
-        <div className="row">
-          <div className="col-md-12 text-center mt-3">
-            <h2>Become a Partner</h2>
-            <p>Contribute to the Dhama community by registering as a:</p>
-            <Link to="/partnerApp.html/travelGuideRegistration" className="btn btn-outline-primary me-3">Travel Guide</Link>
-            <Link to="/partnerApp.html/prasadamProviderRegistration" className="btn btn-outline-primary me-3">Prasadam Provider</Link>
-            <Link to="/partnerApp.html/purohitRegistration" className="btn btn-outline-primary me-3">Purohit</Link>
-            <Link to="/partnerApp.html/partnerRegistration" className="btn btn-outline-primary me-3">Partner Registration</Link>
-          </div>
-        </div>
-      </div>
-    );
-  };
+    if (user) {
+      fetchPartnerData();
+      fetchProfiles();
+    }
+  }, [user, db]);
 
   return (
-    <div>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
+    <div className="container">
+      <h1 className="mt-5 text-center">Partner Dashboard</h1>
+      {!partnerData.name && ( // Condition to check if partner is not registered
         <div>
-          {isRegistered ? renderBookings() : renderPartnerRegistration()}
+          <h2>Partner Registration</h2>
+          <Link to="./partnerRegistration" className="btn btn-primary mr-2 me-4">Register</Link>
         </div>
+        
+      )}
+      {partnerData.name && (
+     
+      <>
+      <h2>Partner Profile</h2>
+      <button className="btn btn-primary mb-3" onClick={toggleExpansion}>
+        {isExpanded ? 'Collapse Profile' : 'Expand Profile'}
+      </button>
+      {isExpanded && (
+        <div className="row">
+          <div className="col-md-6">
+            <div className="card">
+              <div className="card-body">
+                <h5 className="card-title">Profile Information</h5>
+                <p className="card-text">Name: {partnerData.name}</p>
+                <p className="card-text">Date of Birth: {partnerData.dob}</p>
+                <p className="card-text">Email: {partnerData.email}</p>
+                <p className="card-text">Phone: {partnerData.phone}</p>
+                <p className="card-text">Address: {partnerData.address}</p>
+                <img src={partnerData.profilePicUrl} alt="Profile Pic" className="img-fluid" />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+
+      <h2>Profiles</h2>
+
+      {
+      profiles.map((profile, index) => (
+        <div className="col-md-4 mb-3" key={profile.id}>
+
+
+          <button className="btn btn-primary mb-3" onClick={() => toggleExpansion1(index)}>
+            {expandedProfiles[index] ? 'Collapse Profile' : 'Expand Profile'}
+          </button>
+         {expandedProfiles[index] && ( // Conditionally render profile content
+            <>
+              <div className="card">
+                <h5 className="card-title">Purohit Profile {profile.id}</h5>
+                <div className="container">
+                  {/* Display profile data */}
+                  <p className="card-text">Leader: {profile.leader}</p>
+                  <p className="card-text">Leader Contact: {profile.leaderContact}</p>
+                  <p className="card-text">Sampradaya: {profile.sampradaya}</p>
+                  <p className="card-text">Spiritual Master: {profile.spiritualMaster}</p>
+                  <p className="card-text">Spiritual Name: {profile.spiritualName}</p>
+                </div>
+              </div>
+            </>
+          )}
+
+      
+
+
+        </div>
+      ))}
+
+<a href ="purohitApp.html" className="btn btn-primary ms-5 mb-3" >Purohit Console</a>
+
+      <h2 className="mt-5">Bookings</h2>
+      <div>
+        {bookings.length === 0 ? (
+          <p>No current bookings</p>
+        ) : (
+          bookings.map(booking => (
+            <div key={booking.id}>
+              {/* Display booking data using booking */}
+            </div>
+          ))
+        )}
+      </div>
+      </>
       )}
     </div>
   );

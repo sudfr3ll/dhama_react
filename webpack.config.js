@@ -6,11 +6,12 @@ module.exports = {
         userApp: './src/userApp/index.js',
         partnerApp: './src/partnerApp/index.js',
         maps: './src/maps/maps.js',
+        purohitApp: './src/purohitApp/index.js',
         
     },
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: '[name].bundle.js'
+        filename: 'scripts/[name].bundle.js'
     },
     module: {
         rules: [
@@ -55,6 +56,11 @@ module.exports = {
             template: './src/maps/maps.html',
             chunks: ['maps'],
             filename: 'maps.html'
+        }),
+        new HtmlWebpackPlugin({
+            template: './public/index.html',
+            chunks: ['purohitApp'],
+            filename: 'purohitApp.html'
         }),
         // Add more HtmlWebpackPlugin instances for additional SPAs
     ],

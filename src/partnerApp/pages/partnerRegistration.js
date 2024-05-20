@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 // Import your Firebase config
-import { firebaseConfig } from './firebase'; // Make sure to create this file
+import { firebaseConfig } from '../../commonScripts/firebase'; // Make sure to create this file
 
 var filePassport = "";
 var filePassportId ="";
 
 const PartnerRegistration = () => {
+ 
+  const [user, setUser] = useState(null);
   const [name, setName] = useState('');
   const [dob, setDob] = useState('');
   const [email, setEmail] = useState('');
@@ -17,6 +19,8 @@ const PartnerRegistration = () => {
   const [address, setAddress] = useState('');
   const [profilePic, setProfilePic] = useState(null);
   const [photoId, setPhotoId] = useState(null);
+  const [profilePicUrl, setProfilePicUrl] = useState(null);
+  const [photoIdUrl, setPhotoIdUrl] = useState(null);
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
@@ -25,6 +29,14 @@ const PartnerRegistration = () => {
   const metadata = {
     contentType: 'image/jpeg'
   };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+
+    return () => unsubscribe();
+  }, [auth]);
 
   const handleProfilePicChange = (e) => {
     var file = e.target.files[0];
@@ -42,7 +54,7 @@ const PartnerRegistration = () => {
     e.preventDefault();
 
     // Upload profile pic
-    const profilePicRef = ref(storage, `images/profile_${name}_${auth.currentUser.email}/profilePic_${name}_${auth.currentUser.email}`);
+    const profilePicRef = ref(storage, `images/partner/${user.uid}/profilePic_${user.uid}`);
     const profilePicUploadTask = uploadBytesResumable(profilePicRef, filePassport,metadata);
 
     profilePicUploadTask.on('state_changed',
@@ -77,9 +89,9 @@ const PartnerRegistration = () => {
           break;
       }
     },
-    () => {
+    async () => {
       // Upload completed successfully, now we can get the download URL
-      getDownloadURL(profilePicUploadTask.snapshot.ref).then((downloadURL) => {
+      getDownloadURL(profilePicUploadTask.snapshot.ref).then(async(downloadURL) => {
         console.log('File available at', downloadURL);
         const userId = auth.currentUser.uid;
         try {
@@ -87,7 +99,8 @@ const PartnerRegistration = () => {
             profilePicUrl: downloadURL,
           };
           const partnerRef = doc(db, "partners", userId);
-          setDoc(partnerRef, profileInfo, { merge: true });
+        await setDoc(partnerRef, profileInfo, { merge: true });
+        
           console.log('Profile information profile pic url successfully added!');
         } catch (error) {
           console.error('Error adding profile information:', error);
@@ -96,10 +109,10 @@ const PartnerRegistration = () => {
       });
     }
   );
-    const profilePicDownloadURL = await getDownloadURL(profilePicUploadTask.snapshot.ref);
+   // const profilePicDownloadURL = await getDownloadURL(profilePicUploadTask.snapshot.ref);
 
     // Upload photo ID
-    const photoIdRef = ref(storage, `images/profile_${name}_${auth.currentUser.email}/profileId_${name}_${auth.currentUser.email}`);
+    const photoIdRef = ref(storage, `images/partner/${user.uid}/photoId_${user.uid}`);
     const photoIdUploadTask = uploadBytesResumable(photoIdRef, filePassportId,metadata);
 
     photoIdUploadTask.on('state_changed',
@@ -134,9 +147,9 @@ const PartnerRegistration = () => {
           break;
       }
     },
-    () => {
+    async () => {
       // Upload completed successfully, now we can get the download URL
-      getDownloadURL(photoIdUploadTask.snapshot.ref).then((downloadURL) => {
+      getDownloadURL(photoIdUploadTask.snapshot.ref).then(async (downloadURL) => {
         console.log('File available at', downloadURL);
 
         const userId = auth.currentUser.uid;
@@ -145,7 +158,7 @@ const PartnerRegistration = () => {
             idPicUrl: downloadURL,
           };
           const partnerRef = doc(db, "partners", userId);
-          setDoc(partnerRef, profileInfo, { merge: true });
+          await setDoc(partnerRef, profileInfo, { merge: true });
           console.log('Profile information firebaseid pic url successfully added!');
         } catch (error) {
           console.error('Error adding profile information:', error);
@@ -156,7 +169,7 @@ const PartnerRegistration = () => {
   );
 
 
-    const photoIdDownloadURL = await getDownloadURL(photoIdUploadTask.snapshot.ref);
+  //  const photoIdDownloadURL = await getDownloadURL(photoIdUploadTask.snapshot.ref);
 
     // Add data to Firestore
     const userId = auth.currentUser.uid;
@@ -168,7 +181,7 @@ const PartnerRegistration = () => {
           email,
           phone,
           address,
-      }, { merge: true });
+      }, { merge: true });  
       console.log('Fields uploaded successfully!'); // Success confirmation
   } catch (error) {
       console.error('Error uploading fields:', error); // Error handling

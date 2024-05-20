@@ -1,9 +1,16 @@
-
+import React from 'react';
 import './pages/App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Layout from './pages/Layout.js'
+import Layout from '../commonScripts/Layout.js'
 import Home from './pages/Home.js'
-import React from 'react';
+import '../resources/css/style.css';
+import NotFoundPage from './pages/NotFoundPage.js';
+import SearchPurohit from './pages/searchPurohit.js';
+import SearchPrasadam from './pages/searchPrasadam.js';
+import SearchTravelGuide from './pages/searchTravelGuide.js';
+import DhamaServices from './pages/DhamaServices.js';
+
+
 
 
 function App() {
@@ -12,7 +19,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-      
+          <Route path="searchPurohit" element={<SearchPurohit />} />
+          <Route path="searchPrasadam" element={<SearchPrasadam />} />
+          <Route path="searchTravelGuide" element={<SearchTravelGuide />} />
+          <Route path="dhamaServices" element={<DhamaServices />} / >
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
