@@ -99,7 +99,7 @@ const Dashboard = () => {
   </Container>
   );
 
-  const renderPurohitDetails = () => (
+  const renderTravelGuideDetails = () => (
     <div key={profile[0]?.id}>
       <Card className="mb-4 shadow-sm">
         <Card.Body>
@@ -129,9 +129,7 @@ const Dashboard = () => {
             
           </Row>
           <div className="text-center">
-            <Link to="./purohitRegistration">
-              <Button variant="primary" className="mr-4 me-4">Edit</Button>
-            </Link>
+            <Link to="./travelGuideRegistration" className="btn btn-primary mr-4 me-4" />
           </div>
         </Card.Body>
       </Card>
@@ -144,8 +142,8 @@ const Dashboard = () => {
         <h1 className="mt-5 text-center">Purohit Dashboard</h1>
         {!partnerData.name && (
           <div>
-            <h2>Partner Registration</h2>
-            <Link to="./partnerRegistration" className="btn btn-primary mr-2 me-4">Register</Link>
+            <h2>TravelGuideRegistration</h2>
+            <Link to="./travelGuideRegistration" className="btn btn-primary mr-2 me-4">Register</Link>
           </div>
         )}
 
@@ -155,12 +153,12 @@ const Dashboard = () => {
             <Button className="btn btn-primary" onClick={() => setSelectedSection('purohit')}>Purohit Details</Button>
           </div>
           {selectedSection === 'personal' && renderPersonalDetails()}
-          {selectedSection === 'purohit' && renderPurohitDetails()}
+          {selectedSection === 'purohit' && renderTravelGuideDetails()}
         </div>
 
         <h2>Create Profiles</h2>
         <div>
-          <Link to="./purohitRegistration" className="btn btn-primary mr-2 me-4">Purohit Service</Link>
+          <Link to="./travelGuideRegistration" className="btn btn-primary mr-2 me-4">Create Travel Package</Link>
         </div>
 
         <h2 className="mt-5">Bookings</h2>

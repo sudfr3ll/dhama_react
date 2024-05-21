@@ -7,7 +7,7 @@ module.exports = {
         partnerApp: './src/partnerApp/index.js',
         maps: './src/maps/maps.js',
         purohitApp: './src/purohitApp/index.js',
-        
+        travelGuideApp: './src/travelGuideApp/index.js',    
     },
     output: {
         path: path.resolve(__dirname, 'build'),
@@ -61,6 +61,12 @@ module.exports = {
             template: './public/index.html',
             chunks: ['purohitApp'],
             filename: 'purohitApp.html'
+        }),
+
+        new HtmlWebpackPlugin({
+            template: './public/index.html',
+            chunks: ['travelGuideApp'],
+            filename: 'travelGuideApp.html'
         }),
         // Add more HtmlWebpackPlugin instances for additional SPAs
     ],

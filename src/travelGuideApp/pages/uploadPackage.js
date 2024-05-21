@@ -1,9 +1,11 @@
 // src/components/UploadPackage.js
 import React, { useState } from 'react';
-import { db, storage } from '../firebase';
+import { initializeApp } from 'firebase/app';
+import { getFirestore} from 'firebase/firestore';
+import {  getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { collection, addDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import DatePicker from 'react-datepicker';
+import { firebaseConfig } from "../../commonScripts/firebase";
 import 'react-datepicker/dist/react-datepicker.css';
 
 const UploadPackage = () => {
@@ -18,6 +20,11 @@ const UploadPackage = () => {
     { startDate: new Date(), endDate: new Date() },
     { startDate: new Date(), endDate: new Date() },
   ]);
+  const app = initializeApp(firebaseConfig);
+  const storage = getStorage(app);
+  const db = getFirestore(app);
+
+
 
   const handleProfilePicChange = (e) => {
     const file = e.target.files[0];

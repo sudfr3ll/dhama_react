@@ -110,39 +110,9 @@ const Dashboard = () => {
 
 
 
-      <h2>Profiles</h2>
-
-      {
-      profiles.map((profile, index) => (
-        <div className="col-md-4 mb-3" key={profile.id}>
-
-
-          <button className="btn btn-primary mb-3" onClick={() => toggleExpansion1(index)}>
-            {expandedProfiles[index] ? 'Collapse Profile' : 'Expand Profile'}
-          </button>
-         {expandedProfiles[index] && ( // Conditionally render profile content
-            <>
-              <div className="card">
-                <h5 className="card-title">Purohit Profile {profile.id}</h5>
-                <div className="container">
-                  {/* Display profile data */}
-                  <p className="card-text">Leader: {profile.leader}</p>
-                  <p className="card-text">Leader Contact: {profile.leaderContact}</p>
-                  <p className="card-text">Sampradaya: {profile.sampradaya}</p>
-                  <p className="card-text">Spiritual Master: {profile.spiritualMaster}</p>
-                  <p className="card-text">Spiritual Name: {profile.spiritualName}</p>
-                </div>
-              </div>
-            </>
-          )}
-
-      
-
-
-        </div>
-      ))}
-
-<a href ="purohitApp.html" className="btn btn-primary ms-5 mb-3" >Purohit Console</a>
+      <h2>Create or Access Profiles</h2>
+      <a href ="purohitApp.html" className="btn btn-primary ms-5 mb-3" >Purohit Console</a>
+      <a href="travelGuideApp.html" className="btn btn-primary ms-5 mb-3">Travel Guide</a>
 
       <h2 className="mt-5">Bookings</h2>
       <div>
