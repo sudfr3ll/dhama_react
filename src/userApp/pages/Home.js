@@ -2,21 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import placeHolder from '../../resources/placeholder.jpg';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getDoc, doc, getDocs, collection, query, orderBy, startAt, endAt } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { firebaseConfig } from '../../commonScripts/firebase';
 import { Card, Row, Col, Button, Container } from 'react-bootstrap';
-import { geohashQueryBounds, distanceBetween, geohashForLocation } from 'geofire-common';
 
 const Home = () => {
   const [user, setUser] = useState(null);
-  const [matchingDocs, setMatchingDocs] = useState([]);
-  const [center, setCenter] = useState([51.5074, 0.1278]); // Default to London coordinates
-  const radiusInM = 50 * 1000; // 50 km radius
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const [showPurohitData, setShowPurohitData] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();

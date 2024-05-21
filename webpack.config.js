@@ -69,7 +69,8 @@ module.exports = {
             directory: path.join(__dirname, 'public'), // Specify the root directory for serving static files
           },
         compress: true,
-        port: 3000
+        port: 3000,
+        hot: true
     }
 };
 

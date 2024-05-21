@@ -6,8 +6,6 @@ import Home from './pages/Home.js'
 import '../resources/css/style.css';
 import NotFoundPage from './pages/NotFoundPage.js';
 import SearchPurohit from './pages/searchPurohit.js';
-import SearchPrasadam from './pages/searchPrasadam.js';
-import SearchTravelGuide from './pages/searchTravelGuide.js';
 import DhamaServices from './pages/DhamaServices.js';
 
 
@@ -20,8 +18,6 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="searchPurohit" element={<SearchPurohit />} />
-          <Route path="searchPrasadam" element={<SearchPrasadam />} />
-          <Route path="searchTravelGuide" element={<SearchTravelGuide />} />
           <Route path="dhamaServices" element={<DhamaServices />} / >
           <Route path="*" element={<NotFoundPage />} />
         </Route>

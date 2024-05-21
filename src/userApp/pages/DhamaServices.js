@@ -30,7 +30,7 @@ const DhamaServices = () => {
             Book Your Trip
           </div>
           <div className='ms-auto col-8'>
-            <Link to="/searchTravelGuide" className='btn btn-outline-primary col-4'>Trip</Link>
+            <a href="#" className='btn btn-outline-primary col-4'>Trip</a>
           </div>
         </div>
         <div className='row mb-2'>
@@ -38,7 +38,7 @@ const DhamaServices = () => {
             Search Prasadam Nearby
           </div>
           <div className='col-8'>
-            <Link to="/searchPrasadam" className='btn btn-outline-primary col-4'>Prasadam</Link>
+            <a href="#" className='btn btn-outline-primary col-4'>Prasadam</a>
           </div>
         </div>
       </div>
