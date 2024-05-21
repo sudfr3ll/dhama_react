@@ -39,6 +39,7 @@ const TravelGuideRegistration = () => {
 
 
   const getLocation = () => {
+    e.preventDefault();
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
