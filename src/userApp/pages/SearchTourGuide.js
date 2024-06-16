@@ -7,6 +7,7 @@ import { firebaseConfig } from '../../commonScripts/firebase';
 import { Card, Row, Col, Button, Container } from 'react-bootstrap';
 import { geohashQueryBounds, distanceBetween, geohashForLocation } from 'geofire-common';
 
+
 const SearchTourGuide = () => {
 
   const [user, setUser] = useState(null);
@@ -111,14 +112,7 @@ const SearchTourGuide = () => {
                 <Card.Text><strong>City:</strong>{doc.city}<strong  className="ms-2">Country:</strong>{doc.country}</Card.Text>
               </Col>
             </Row>
-            <Row className="mb-3">
-              <Col xs={12} sm={6}>
-                <Card.Text><strong>Sampradaya:</strong> {doc.sampradaya}</Card.Text>
-              </Col>
-              <Col xs={12} sm={6}>
-                <Card.Text><strong>Spiritual Master:</strong> {doc.spiritualMaster}</Card.Text>
-              </Col>
-            </Row>
+          
             <Row className="mb-3">
               <Col xs={12} sm={6}>
                 <Card.Text><strong>Rating:</strong> {doc.rating}</Card.Text>

@@ -6,13 +6,18 @@ import { getFirestore } from 'firebase/firestore';
 import { firebaseConfig } from '../../commonScripts/firebase';
 import { Link } from 'react-router-dom';
 import {  Card, Row, Col, Button, Container  } from 'react-bootstrap';
+import { set } from 'firebase/database';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [partnerData, setPartnerData] = useState({});
   const [profile, setProfile] = useState([]);
+  const [packages, setPackages] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [selectedSection, setSelectedSection] = useState('personal');
+  var fetchPartnerData = [];
+  var fetchProfiles = [];
+  var fetchPackages = [];
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
@@ -27,7 +32,7 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    const fetchPartnerData = async () => {
+    fetchPartnerData = async () => {
       try {
         const partnerRef = doc(db, "partners", user.uid);
         const partnerDoc = await getDoc(partnerRef);
@@ -40,13 +45,25 @@ const Dashboard = () => {
       }
     };
 
-    const fetchProfiles = async () => {
+    fetchProfiles = async () =>{
+      try{
+        const q = doc(db, 'partners', user.uid, 'partnerProfiles', 'travelGuide');
+       const profileData = await getDoc(q);
+       setProfile(profileData.data());
+       console.log(profileData.data()); 
+      }
+      catch(error){
+        console.error('Error fetching profiles:', error);
+      }
+    }
+
+    fetchPackages = async () => {
       try {
-        const q = query(collection(db, 'partners', user.uid, 'partnerProfiles'));
+        const q = query(collection(db, 'partners', user.uid,'partnerProfiles', 'travelGuide', 'tourPackages'));
         const profilesSnapshot = await getDocs(q);
-        const profilesData = profilesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setProfile(profilesData);
-        console.log(profilesData);
+        const packagesData = profilesSnapshot.docs.map(doc => ({ packageName: doc.packageName, ...doc.data() }));
+        setPackages(packagesData);
+        console.log(packagesData);
       } catch (error) {
         console.error('Error fetching profiles:', error);
       }
@@ -54,6 +71,7 @@ const Dashboard = () => {
 
     if (user) {
       fetchPartnerData();
+      fetchPackages();
       fetchProfiles();
     }
   }, [user, db]);
@@ -100,37 +118,35 @@ const Dashboard = () => {
   );
 
   const renderTravelGuideDetails = () => (
-    <div key={profile[0]?.id}>
+    <div >
       <Card className="mb-4 shadow-sm">
         <Card.Body>
-        <Card.Header as="h5">Purohit Profile {profile[0]?.id}</Card.Header>
+        <Card.Header as="h5">Travel Guide Details</Card.Header>
+          <Card.Text><strong>Travel Agency Address:</strong> {profile.addressStreet}, {profile.city}, {profile.country}</Card.Text>
           <Row className="mb-3 mt-3">
             <Col>
-              <Card.Text><strong>Leader:</strong> {profile[0]?.leader}</Card.Text>
+              <Card.Text><strong>Currently Active In :</strong> {profile.dhama}</Card.Text>
             </Col>
             <Col>
-              <Card.Text><strong>Leader Contact:</strong> {profile[0]?.leaderContact}</Card.Text>
+              <Card.Text><strong>ISKCON Affiliated :</strong> {profile.iskconMember}</Card.Text>
             </Col>
           </Row>
-          <Row className="mb-3">
+          <Row>
             <Col>
-              <Card.Text><strong>Sampradaya:</strong> {profile[0]?.sampradaya}</Card.Text>
+              <Card.Text><strong>Name Of Owner :</strong> {profile.name}</Card.Text>
             </Col>
             <Col>
-              <Card.Text><strong>Spiritual Master:</strong> {profile[0]?.spiritualMaster}</Card.Text>
+              <Card.Text><strong>Spiritual Name :</strong> {profile.spiritual}</Card.Text>
             </Col>
           </Row>
-          <Card.Text className="mb-3"><strong>Spiritual Name:</strong> {profile[0]?.spiritualName}</Card.Text>
+          <Row>
+            <Col>
+              <Card.Text><strong>Phone :</strong> {profile.contactNumber}</Card.Text>
+            </Col>
+          </Row>
           <Row className="mb-3 text-center">
-            
-              <img src={profile[0]?.purohitPicUrls[0]} alt="Profile Pic" className="img-fluid rounded-circle" style={{ width: '100px' }} />
-              <img src={profile[0]?.purohitPicUrls[1]} alt="Profile Pic" className="img-fluid rounded-circle" style={{ width: '100px' }} />
-              <img src={profile[0]?.purohitPicUrls[2]} alt="Profile Pic" className="img-fluid rounded-circle" style={{ width: '100px' }} />
-            
+              <img src={profile.dpUrl} alt="Profile Pic" className="img-fluid rounded-circle" style={{ width: '100px' }} />    
           </Row>
-          <div className="text-center">
-            <Link to="./travelGuideRegistration" className="btn btn-primary mr-4 me-4" />
-          </div>
         </Card.Body>
       </Card>
     </div>
@@ -139,40 +155,51 @@ const Dashboard = () => {
   return (
     <>
       <div className="container">
-        <h1 className="mt-5 text-center">Purohit Dashboard</h1>
+        <h1 className="mt-5 text-center">Travel Guide Dashboard</h1>
         {!partnerData.name && (
           <div>
             <h2>TravelGuideRegistration</h2>
             <Link to="./travelGuideRegistration" className="btn btn-primary mr-2 me-4">Register</Link>
           </div>
         )}
-
+      {!fetchPartnerData.isNotEmpty && (
+       <>
         <div>
           <div className="mb-3 mt-6 ">
             <Button className="btn btn-primary me-2" onClick={() => setSelectedSection('personal')}>Personal Details</Button>
-            <Button className="btn btn-primary" onClick={() => setSelectedSection('purohit')}>Purohit Details</Button>
+            <Button className="btn btn-primary" onClick={() => setSelectedSection('travelGuide')}>Travel Guide Details</Button>
           </div>
           {selectedSection === 'personal' && renderPersonalDetails()}
-          {selectedSection === 'purohit' && renderTravelGuideDetails()}
+          {selectedSection === 'travelGuide' && renderTravelGuideDetails()}
         </div>
 
         <h2>Create Profiles</h2>
         <div>
-          <Link to="./travelGuideRegistration" className="btn btn-primary mr-2 me-4">Create Travel Package</Link>
+          <Link to="./uploadPackage" className="btn btn-primary mr-2 me-4">Add Travel Package +</Link>
         </div>
 
-        <h2 className="mt-5">Bookings</h2>
-        <div>
-          {bookings.length === 0 ? (
-            <p>No current bookings</p>
-          ) : (
-            bookings.map(booking => (
-              <div key={booking.id}>
-                {/* Display booking data using booking */}
-              </div>
-            ))
-          )}
-        </div>
+
+        {!fetchPackages.isNotEmpty && (
+          <div className='container mt-5 mb-5 items-center'>
+              {packages.map(profile =>
+                <div className='card ms-5 me-5 mb-5'>
+                  <p>Package name: {profile.name}</p>
+                  <p>Package description: {profile.description}</p>
+                  <p>Package price: {profile.price}</p>
+                  <p>Number Of People: {profile.numPeople}</p>
+                  <p>Vehicle: {profile.transport}</p>
+                  <p>Package Images</p>
+                  {
+                  profile.travelPackageImages.map(image => (
+                    <img src={image} style={{ width: '100px', shape: 'circle', margin: '10px'}} alt="Package Image" />
+                  ))
+                  }
+                  </div>
+              )}
+          </div>
+        )}
+        </>
+      )}
       </div>
     </>
   );

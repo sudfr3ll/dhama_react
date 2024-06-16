@@ -17,15 +17,30 @@ if (!firebase.apps.length) {
 function Layout() {
   const [user, setUser] = useState(null);
   const [showAuthContainer, setShowAuthContainer] = useState(false);
-  const auth = getAuth();
-
+ 
+/*
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
   }, []);
+*/
+  useEffect(()=>
+  {
+    const auth = getAuth();
+    setUser(auth.currentUser);
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUser(user);
+        localStorage.setItem("user", JSON.stringify(user));
+      } else {
+        setUser(null);
+        localStorage.removeItem("user");
+      }
+    })
 
+  },[])
   const signOutGoogle = async () => {
     try {
       await signOut(auth);
@@ -97,31 +112,7 @@ function Layout() {
             />
             <span className="fs-4">Dhama</span>
           </Link>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav">
-              <li className="nav-item">
-                <a className="nav-link" href="/maps.html">
-                  MAPS
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">
-                  ABOUT US
-                </a>
-              </li>
-            </ul>
-          </div>
+       
 
           {user ? (
             <div className="user-profile me-2 dropdown d-flex justify-content-end">

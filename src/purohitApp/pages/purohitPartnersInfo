@@ -1,0 +1,81 @@
+import React from 'react';
+
+const PurohitPartnersProgram = () => {
+  return (
+    <div className="container mt-5">
+      <h1 className="text-center mb-4">Dhama App: Purohit Partners Program</h1>
+
+      <section className="mb-5">
+        <h2 className="h4">Overview</h2>
+        <p>
+          Welcome to the Dhama App's Purohit Partners Program, a platform dedicated to empowering purohits and spiritual leaders by connecting them with individuals seeking their services. Our program is designed to enhance your reach, streamline your service delivery, and ensure that your expertise benefits those in need of spiritual guidance and ritual performance.
+        </p>
+      </section>
+
+      <section className="mb-5">
+        <h2 className="h4">Benefits of Joining the Purohit Partners Program</h2>
+        <ul className="list-group">
+          <li className="list-group-item">
+            <strong>Expand Your Reach:</strong> By joining the Dhama App, you gain access to a vast network of individuals and families looking for experienced purohits to perform various rituals and ceremonies. Expand your reach beyond your local community and connect with devotees globally.
+          </li>
+          <li className="list-group-item">
+            <strong>Streamlined Service Management:</strong> Our platform simplifies the process of managing your appointments and services. With features like an integrated calendar, automated booking confirmations, and reminders, you can focus more on delivering exceptional spiritual services rather than administrative tasks.
+          </li>
+          <li className="list-group-item">
+            <strong>Showcase Your Expertise:</strong> Create a detailed profile highlighting your qualifications, areas of expertise, and years of experience. Potential clients can learn about your background, read testimonials, and view ratings from previous services, helping you build a trusted reputation within the community.
+          </li>
+          <li className="list-group-item">
+            <strong>Flexibility and Convenience:</strong> Offer both virtual and in-person services to accommodate the diverse needs of your clients. This flexibility ensures that you can provide spiritual guidance and perform rituals regardless of geographical barriers, expanding your service offerings.
+          </li>
+          <li className="list-group-item">
+            <strong>Secure Payments:</strong> The Dhama App facilitates secure and timely payments for your services. Clients can pay through the app, ensuring a hassle-free transaction process for both parties.
+          </li>
+          <li className="list-group-item">
+            <strong>Community and Support:</strong> Join a community of like-minded spiritual leaders and purohits. Engage in discussions, share insights, and receive support from the Dhama App team, dedicated to helping you succeed in your spiritual mission.
+          </li>
+        </ul>
+      </section>
+
+      <section className="mb-5">
+        <h2 className="h4">How to Join</h2>
+        <ol className="list-group list-group-numbered">
+          <li className="list-group-item">
+            <strong>Sign Up:</strong> Download the Dhama App and complete the registration process. Provide detailed information about your qualifications, areas of expertise, and the services you offer.
+          </li>
+          <li className="list-group-item">
+            <strong>Profile Verification:</strong> Our team will verify your credentials to ensure authenticity. This step is crucial to maintain the trust and reliability of the Dhama App community.
+          </li>
+          <li className="list-group-item">
+            <strong>Service Listing:</strong> List the various services you offer, including details about each ritual or consultation, pricing, and availability. Highlight any specializations or unique offerings that set you apart.
+          </li>
+          <li className="list-group-item">
+            <strong>Engage with Clients:</strong> Once your profile is live, clients can browse your services and book appointments. Engage with clients through the app to discuss specific requirements, customize services, and confirm bookings.
+          </li>
+          <li className="list-group-item">
+            <strong>Deliver Exceptional Services:</strong> Perform rituals and consultations with dedication and expertise. Encourage clients to leave ratings and reviews to build your reputation and attract more clients.
+          </li>
+        </ol>
+      </section>
+
+      <section className="mb-5">
+        <h2 className="h4">Why Partner with Dhama?</h2>
+        <ul className="list-group">
+          <li className="list-group-item">Reach a Broader Audience: Tap into a global network of individuals seeking spiritual services.</li>
+          <li className="list-group-item">Simplified Operations: Manage bookings, schedules, and payments efficiently through the app.</li>
+          <li className="list-group-item">Build Your Brand: Showcase your expertise and build a trusted reputation within the Dhama community.</li>
+          <li className="list-group-item">Flexibility: Offer both virtual and in-person services to meet the needs of a diverse clientele.</li>
+          <li className="list-group-item">Secure and Reliable: Benefit from secure payment processes and reliable support from the Dhama team.</li>
+        </ul>
+      </section>
+
+      <section className="mb-5">
+        <h2 className="h4">Join Us Today</h2>
+        <p>
+          Join the Dhama Purohit Partners Program today and take your spiritual service to the next level. Together, let's bring authentic and meaningful spiritual experiences to individuals and families around the world. Download the Dhama App and start your journey with us.
+        </p>
+      </section>
+    </div>
+  );
+};
+
+export default PurohitPartnersProgram;

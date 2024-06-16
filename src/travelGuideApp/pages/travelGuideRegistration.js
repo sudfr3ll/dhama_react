@@ -159,7 +159,7 @@ const TravelGuideRegistration = () => {
 
   return (
     <div className="container">
-      <h2 className="mt-4 mb-4">Register as a travelGuide</h2>
+      <h2 className="mt-4 mb-4">Register as a Travel Guide Agent</h2>
       <form onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-md-6">
@@ -175,15 +175,17 @@ const TravelGuideRegistration = () => {
             />
           </div>
           <div className="col-md-6">
-            <label htmlFor="dhama">Select Dhama for you want to become Travel Guide:</label>
+            <label htmlFor="dhama">Select Dhama for you want to become Travel Guide Agent:</label>
             <select className="form-select" aria-label="Default select example" onChange={(e) => {
               const selectedOptionText = e.target.options[e.target.selectedIndex].text;
               setDhama(selectedOptionText);
             }}>
               <option value="">Open this select menu</option>
               <option value="1">Vrindavan and Braja Mandal</option>
-              <option value="2">Mayapur and Gaur Mandal</option>
-              <option value="3">Haridwar, Rishikesh</option>
+              <option value="2">Mayapur and WestBengal</option>
+              <option value="3">Haridwar, Rishikesh, Uttarakhand</option>
+              <option value="4">Dwarka, Gujrat</option>
+              <otion value="5">Rameshwaram, South India</otion>
             </select>
           </div>
         </div>
