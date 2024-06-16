@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const WebpackObfuscator = require('webpack-obfuscator');
 
 module.exports = {
     entry: {
@@ -69,6 +70,16 @@ module.exports = {
             filename: 'travelGuideApp.html'
         }),
         // Add more HtmlWebpackPlugin instances for additional SPAs
+        new WebpackObfuscator({
+            rotateStringArray: true,
+            stringArray: true,
+            stringArrayEncoding: ['base64'],
+            stringArrayThreshold: 0.75,
+            compact: true,
+            controlFlowFlattening: true,
+            controlFlowFlatteningThreshold: 0.75
+        }, [])
+        
     ],
     devServer: {
         static: {
